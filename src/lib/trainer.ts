@@ -24,10 +24,17 @@ export function initTrainer(opening: Opening): TrainerState {
   const game = new Chess();
   const isPlayerWhite = opening.playerColor === "white";
 
+  // Wrap the tree in a virtual root so that the first move (e.g. d4 for London,
+  // e4 for Caro-Kann) is a child to be found, not the starting position.
+  const virtualRoot: OpeningNode = {
+    move: "",
+    children: [opening.tree],
+  };
+
   const state: TrainerState = {
     game,
     opening,
-    currentNodes: [opening.tree],
+    currentNodes: [virtualRoot],
     moveHistory: [],
     isPlayerTurn: isPlayerWhite, // White moves first
     status: "playing",
